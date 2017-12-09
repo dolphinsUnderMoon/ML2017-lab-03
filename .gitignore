@@ -102,3 +102,4 @@ ENV/
 *.jpg
 *.dot
 *.xml
+.idea/workspace.xml
