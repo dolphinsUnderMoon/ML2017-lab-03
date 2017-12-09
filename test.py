@@ -46,4 +46,8 @@ for i in range(len(adaboost_predict)):
 precision = np.mean(adaboost_predict == y_validation)
 print(precision)
 print(weak_classifier_precisions)
-print(classification_report(y_validation, adaboost_predict))
+report = classification_report(y_validation, adaboost_predict)
+with open("./report.txt", 'w') as f:
+    f.write(report)
+
+print(report)
