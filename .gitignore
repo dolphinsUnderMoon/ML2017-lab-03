@@ -103,3 +103,6 @@ ENV/
 *.dot
 *.xml
 .idea/*
+*.xml
+.idea/misc.xml
+.idea/misc.xml
