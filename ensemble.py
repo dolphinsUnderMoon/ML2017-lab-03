@@ -35,7 +35,7 @@ class AdaBoostClassifier:
         distribution = np.ones(num_samples) * (1 / num_samples)
 
         for i in range(self.n_weakers_limit):
-            weak_classifier = self.weak_classifier(criterion='entropy', max_depth=8)
+            weak_classifier = self.weak_classifier(criterion='entropy', max_depth=4)
             weak_classifier.fit(X, y, sample_weight=distribution)
 
             self.weak_classifier_list.append(weak_classifier)
