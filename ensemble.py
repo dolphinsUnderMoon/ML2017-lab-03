@@ -1,6 +1,7 @@
 import pickle
 import numpy as np
 from sklearn import tree
+import os
 
 
 class AdaBoostClassifier:
@@ -56,9 +57,6 @@ class AdaBoostClassifier:
         np.save("./model/alphas.npy", np.array(self.alpha_list))
         return
 
-
-
-
     def predict_scores(self, X):
         '''Calculate the weighted sum score of the whole base classifiers for given samples.
 
@@ -68,7 +66,25 @@ class AdaBoostClassifier:
         Returns:
             An one-dimension ndarray indicating the scores of differnt samples, which shape should be (n_samples,1).
         '''
-        pass
+        trees = []
+        model_directory = r"./model"
+
+        for filename in os.listdir(model_directory):
+            if filename.split(".")[1] == "dot":
+                with open(model_directory + "/" + filename, 'rb') as f:
+                    weak_classifier = pickle.load(f)
+                    trees.append(weak_classifier)
+
+        alphas = np.load(model_directory + "/alphas.npy")
+
+        adaboost_predict = np.zeros(X.shape[0])
+        count = 0
+        for a_tree in trees:
+            pre = a_tree.predict(X)
+            adaboost_predict += alphas[count] * pre
+            count += 1
+
+        return adaboost_predict
 
     def predict(self, X, threshold=0):
         '''Predict the catagories for geven samples.
@@ -81,6 +97,7 @@ class AdaBoostClassifier:
             An ndarray consists of predicted labels, which shape should be (n_samples,1).
         '''
 
+        '''
         predicts = []
         for weak_classifier in self.weak_classifier_list:
             predicts.append(weak_classifier.predict(X))
@@ -90,8 +107,15 @@ class AdaBoostClassifier:
             return 1
         else:
             return -1
+        '''
+        predicts = self.predict_scores(X)
+        for i in range(X.shape[0]):
+            if predicts[i] > threshold:
+                predicts[i] = 1
+            else:
+                predicts[i] = -1
 
-
+        return predicts
 
     @staticmethod
     def save(model, filename):

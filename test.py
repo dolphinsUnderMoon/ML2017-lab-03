@@ -2,6 +2,7 @@ import pickle
 import numpy as np
 import os
 from sklearn.metrics import classification_report
+from ensemble import *
 
 original_dataset = np.load("./datasets/original_data.npy")
 num_face_feature = original_dataset.shape[1] - 1
@@ -12,7 +13,7 @@ X_validation = original_dataset[training_size:, :num_face_feature - 1]
 y_train = original_dataset[:training_size, -1]
 y_validation = original_dataset[training_size:, -1]
 
-
+'''
 trees = []
 model_directory = r"./model"
 
@@ -41,11 +42,13 @@ for i in range(len(adaboost_predict)):
         adaboost_predict[i] = 1
     else:
         adaboost_predict[i] = -1
+'''
 
+test_classifier = AdaBoostClassifier(tree.DecisionTreeClassifier, 10)
+adaboost_predict = test_classifier.predict(X_validation)
 
 precision = np.mean(adaboost_predict == y_validation)
 print(precision)
-print(weak_classifier_precisions)
 report = classification_report(y_validation, adaboost_predict)
 with open("./report.txt", 'w') as f:
     f.write(report)
